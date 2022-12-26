@@ -26,21 +26,19 @@ private:
     list<Etiqueta> etiquetas;
     map<string, Usuario> usuarios;
 
+    deque<Etiqueta *> cargarDeque(string etiquetasDelCSV);
+
+    Fecha separateNumbers(const std::string &str);
 
     static void
-    mostrar(int contador, const string &id, const string &email, const string &nombre, int tam, int dia, int mes,
-            int anno,
-            const deque<Etiqueta *> &etiquetada, int posX, int posY);
-
-    static void
-    mostrar(int contador, const string &id, const string &email, const string &nombre, int tam, int dia, int mes,
-            int anno);
+    mostrar(int contador, const string id, const string &email, const string &nombre, int tam, const std::string& fecha,
+            const deque<Etiqueta *> &etiquetada, float posX, float posY);
 
     void cargarEtiquetas(string miArchivo, bool mostrarPorPantalla);
 
     void cargarUsuarios(string miArchivo, bool mostrarPorPantalla);
 
-    void cargarImages(string miArchivo, bool mostrarPorPantalla);
+    void cargarImages(const string &miArchivo, bool mostrarPorPantalla);
 
 public:
     ImageBook();

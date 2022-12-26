@@ -8,9 +8,17 @@
 
 Imagen::Imagen() {}
 
-Imagen::Imagen(const string &id, const string &fichero, const string &tam, const Fecha &fecha,
-               const deque<Etiqueta *> &etiquetada, int posX, int posY) : id(id), fichero(fichero), tam(tam), fecha(fecha),
-                                                      etiquetada(etiquetada), posX(posX), posY(posY) {}
+Imagen::Imagen(const string& id, const std::string& email, const std::string& fichero, const int tam, const Fecha& fecha,
+               const deque<Etiqueta *> &etiquetada, float posX, float posY) {
+    this->id=id;
+    this->fichero=fichero;
+    this->email=email;
+    this->tam=tam;
+    this->fecha=fecha;
+    this->etiquetada=etiquetada;
+    this->posX=posX;
+    this->posY=posY;
+}
 
 Imagen::Imagen(const Imagen &other) {
     this->id = other.id;
@@ -30,7 +38,7 @@ const string &Imagen::getFichero() const {
     return fichero;
 }
 
-const string &Imagen::getTam() const {
+const int &Imagen::getTam() const {
     return tam;
 }
 
@@ -50,7 +58,7 @@ void Imagen::setFichero(const string &fichero) {
     Imagen::fichero = fichero;
 }
 
-void Imagen::setTam(const string &tam) {
+void Imagen::setTam(const int &tam) {
     Imagen::tam = tam;
 }
 
@@ -59,9 +67,9 @@ void Imagen::setFecha(const Fecha &fecha) {
 }
 
 bool Imagen::operator<(const Imagen &rhs) const {
-    if (stoi(id) < stoi(rhs.id))
+    if (id < rhs.id)
         return true;
-    if (stoi(rhs.id) < stoi(id))
+    if (rhs.id < id)
         return false;
     return true;
 }
@@ -78,15 +86,15 @@ bool Imagen::operator>=(const Imagen &rhs) const {
     return !(*this < rhs);
 }
 
-Imagen &Imagen::operator=(const Imagen &valor) {
-    if (this == &valor)
+Imagen &Imagen::operator=(const Imagen &other) {
+    if (this == &other)
         return *this;
 
-    this->id = valor.id;
-    this->fichero = valor.fichero;
-    this->tam = valor.tam;
-    this->fecha = valor.fecha;
-    this->etiquetada = valor.etiquetada;
+    this->id = other.id;
+    this->fichero = other.fichero;
+    this->tam = other.tam;
+    this->fecha = other.fecha;
+    this->etiquetada = other.etiquetada;
 
     return *this;
 }

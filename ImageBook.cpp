@@ -1,33 +1,19 @@
-//
-// Created by gara on 26/11/2022.
-//
-
 #include "ImageBook.h"
-#include <string.h>
+#include <cstring>
 
 void
-ImageBook::mostrar(int contador, const string &id, const string &email, const string &nombre, int tam, int dia, int mes,
-                   int anno, const deque<Etiqueta *> &etiquetada, int posX, int posY) {
+ImageBook::mostrar(int contador, const string id, const string &email, const string &nombre, int tam,
+                   const std::string &fecha, const deque<Etiqueta *> &etiquetada, float posX, float posY) {
     std::cout << contador
               << " Imagen: ( ID=" << id
               << " Email=" << email << " Fichero=" << nombre << " Tam=" << tam
-              << " Fecha=" << dia << "/" << mes << "/" << anno
+              << " Fecha=" << fecha
               << " Etiqueta=";
     for (auto x: etiquetada) {
         printf("%s ", x->getNombre().c_str());
     }
     std::cout << " X=" << posX << " Y=" << posY;
     printf(")\n");
-}
-
-void
-ImageBook::mostrar(int contador, const string &id, const string &email, const string &nombre, int tam, int dia, int mes,
-                   int anno) {
-    std::cout << contador
-              << " Imagen: ( ID=" << id
-              << " Email=" << email << " Fichero=" << nombre << " Tam=" << tam
-              << " Fecha=" << dia << "/" << mes << "/" << anno
-              << endl;
 }
 
 void ImageBook::cargarEtiquetas(string miArchivo, bool mostrarPorPantalla) {
@@ -107,88 +93,99 @@ void ImageBook::cargarUsuarios(string miArchivo, bool mostrarPorPantalla) {
     }
 }
 
-void ImageBook::cargarImages(string miArchivo, bool mostrarPorPantalla) {
-    std::ifstream file;
-    std::stringstream columnas;
-    std::string fila, id, email, nombre, etiquetas_todas;
-    std::map<std::string, Imagen> images;
-    int tam = 0, dia = 0, mes = 0, anno = 0, contador = 0, posX = 0, posY = 0;
+deque<Etiqueta *> ImageBook::cargarDeque(string etiquetasDelCSV) {
+    deque<Etiqueta *> etiquetasDeque;
+    string str = etiquetasDelCSV;
+    size_t posComa = 0;
+    string palabra;
+    while ((posComa = str.find(',')) != string::npos) {
+        palabra = str.substr(0, posComa);
+        Etiqueta aux = Etiqueta(palabra);
+        std::list<Etiqueta>::iterator it;
+        it = std::find(etiquetas.begin(), etiquetas.end(), aux);
+        etiquetasDeque.emplace_back(&*it);
+        str.erase(0, posComa + 1);
+        if (palabra == "final") {
+            int i = 0;
+        }
+    }
+    Etiqueta aux = Etiqueta(str);
+    std::list<Etiqueta>::iterator it;
+    it = std::find(etiquetas.begin(), etiquetas.end(), aux);
+    etiquetasDeque.emplace_back(&*it);
 
-    file.open(miArchivo);
+    return etiquetasDeque;
+}
+
+Fecha ImageBook::separateNumbers(const std::string &str) {
+    std::stringstream ss(str);
+    int numA, numB, numC;
+    char delimiter = '/';
+
+    ss >> numA >> delimiter >> numB >> delimiter >> numC;
+    Fecha fecha(numA, numB, numC);
+
+    return fecha;
+}
+
+void ImageBook::cargarImages(const string &miArchivo, bool mostrarPorPantalla) {
+    std::ifstream file(miArchivo);
     if (file.good()) {
-
         clock_t t_ini = clock();
 
-        while (getline(file, fila)) {
+        std::string line;
+        while (std::getline(file, line)) {
+            if (line.empty()) continue;
 
-            if (!fila.empty()) {
+            //formato de fila: id;email;nombreFichero;tam;fechaString;etiquetada;posX;posY
+            std::istringstream iss(line);
+            std::string id, tamS, posXs, posYs, email, nombreFichero, fechaString, etiquetasDelCSV;
 
-                columnas.str(fila);
+            std::getline(iss, id, ';');
+            std::getline(iss, email, ';');
+            std::getline(iss, nombreFichero, ';');
+            std::getline(iss, tamS, ';');
+            std::getline(iss, fechaString, ';');
+            std::getline(iss, etiquetasDelCSV, ';');
+            std::getline(iss, posXs, ';');
+            std::getline(iss, posYs, ';');
 
-                //formato de fila: id;email;nombre;tam;fecha;etiquetada;posX;posY
+            int tam, contador = 0;
+            float posX, posY;
 
-                getline(columnas, id, ';');
-                getline(columnas, email, ';');
-                getline(columnas, nombre, ';');
+            std::istringstream(tamS) >> tam;
+            std::istringstream(posXs) >> posX;
+            std::istringstream(posYs) >> posY;
 
-                columnas >> tam >> posX >> posY;
-                columnas.ignore();
+            deque<Etiqueta *> dequeEtiquetas = cargarDeque(etiquetasDelCSV);
 
-                columnas >> dia;
-                columnas.ignore();
-                columnas >> mes;
-                columnas.ignore();
-                columnas >> anno;
-                columnas.ignore();
+            Fecha fecha = separateNumbers(fechaString);
 
-                getline(columnas, etiquetas_todas);
-                fila = "";
-                columnas.clear();
+            Imagen imagenAux(id, email, nombreFichero, tam, fecha, dequeEtiquetas, posX, posY);
+            images[contador] = imagenAux;
+            usuarios.find(email)->second.insertaImagen(&(images[contador]));
+            ++contador;
 
-                Fecha fecha(dia, mes, anno);
-
-                deque<Etiqueta *> etiquetada;
-                string etiqueta;
-                int pos = 0, pos2 = 0;
-
-                while (pos != -1) {
-                    pos = etiquetas_todas.find_last_of(',');
-                    etiqueta = etiquetas_todas.substr(pos + 1);
-                    pos2 = etiquetas_todas.find(',' + etiqueta);
-                    if (pos2 != -1) {
-                        etiquetas_todas.erase(pos2);
-                    }
-                    Etiqueta aux = Etiqueta(etiqueta);
-                    std::list<Etiqueta>::iterator it;
-                    it = std::find(etiquetas.begin(), etiquetas.end(), aux);
-                    etiquetada.emplace_back(&*it);
-                }
-
-                Imagen imagenAux(id, nombre, to_string(tam), fecha, etiquetada, posX, posY);
-                images[id] = imagenAux;
-                usuarios.find(email)->second.insertaImagen(&(images[id]));
-                ++contador;
-
-                if (mostrarPorPantalla) {
-                    mostrar(contador, id, email, nombre, tam, dia, mes, anno, etiquetada, posX, posY);
-                    cout << usuarios.find(email)->second.numImages() << " "
-                         << usuarios.find(email)->second.getEmail() << endl;
-                }
+            if (mostrarPorPantalla) {
+                mostrar(contador, id, email, nombreFichero, tam, fechaString, dequeEtiquetas, posX, posY);
+                std::cout << usuarios.find(email)->second.numImages() << " "
+                          << usuarios.find(email)->second.getEmail() << std::endl;
             }
         }
         file.close();
+
         std::cout << "Tiempo lectura del archivo 'imagenes_v2_mod.csv': "
                   << ((clock() - t_ini) / (float) CLOCKS_PER_SEC) << " segs." << std::endl;
-
     } else {
         std::cout << "Error de apertura en archivo\n";
     }
 }
 
 ImageBook::ImageBook() {
-    cargarImages("../imagenes_v2_mod.csv", true);
+    images = vector<Imagen>(10000);
     cargarUsuarios("../usuarios.txt", false);
     cargarEtiquetas("../etiquetas.txt", false);
+    cargarImages("../imagenes_v2_mod.csv", true);
 }
 
 ImageBook::ImageBook(const ImageBook &other) {

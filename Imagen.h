@@ -16,20 +16,21 @@ using std::string;
 class Imagen {
 private:
     string id = "id";
+    string email = "email";
     string fichero = "fichero";
-    string tam = "tam";
+    int tam;
     Fecha fecha;
-    deque<Etiqueta*> etiquetada;
+    deque<Etiqueta *> etiquetada;
     int posX, posY;
 
 public:
 
     Imagen();
 
-    Imagen(const string &id, const string &fichero, const string &tam, const Fecha &fecha,
-           const deque<Etiqueta *> &etiquetada, int posX, int posY);
+    Imagen(const string& id, const string &email, const string &fichero, int tam, const Fecha &fecha,
+           const deque<Etiqueta *> &etiquetada, float posX, float posY);
 
-    Imagen(const Imagen& other);
+    Imagen(const Imagen &other);
 
     virtual ~Imagen();
 
@@ -39,7 +40,7 @@ public:
 
     void setFichero(const string &fichero);
 
-    void setTam(const string &tam);
+    void setTam(const int &tam);
 
     void setFecha(const Fecha &fecha);
 
@@ -47,11 +48,11 @@ public:
 
     const string &getFichero() const;
 
-    const string &getTam() const;
+    const int &getTam() const;
 
     Fecha &getFecha();
 
-    const deque<Etiqueta *>  &getEtiqueta() const;
+    const deque<Etiqueta *> &getEtiqueta() const;
 
     bool operator<(const Imagen &rhs) const;
 
@@ -61,7 +62,7 @@ public:
 
     bool operator>=(const Imagen &rhs) const;
 
-    Imagen &operator=(const Imagen &valor);
+    Imagen &operator=(const Imagen &other);
 
     bool operator==(const Imagen &valor) const;
 
