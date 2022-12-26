@@ -20,7 +20,19 @@ class MallaRegular {
     Casilla<T> *obtenerCasilla(float x, float y);
 
 public:
-    MallaRegular(int aXMin, int aYMin, int aXMax, int aYMax, int aNDiv);
+
+    // Default constructor
+    MallaRegular() : xMin{}, yMin{}, xMax{}, yMax{}, tamaCasillaX{}, tamaCasillaY{}, mr{} {}
+
+    // Parametrized constructor
+    MallaRegular(float xMin, float yMin, float xMax, float yMax, float tamaCasillaX, float tamaCasillaY) :
+            xMin{xMin}, yMin{yMin}, xMax{xMax}, yMax{yMax}, tamaCasillaX{tamaCasillaX}, tamaCasillaY{tamaCasillaY},
+            mr{} {}
+
+    // Copy constructor
+    MallaRegular(const MallaRegular &other) :
+            xMin{other.xMin}, yMin{other.yMin}, xMax{other.xMax}, yMax{other.yMax},
+            tamaCasillaX{other.tamaCasillaX}, tamaCasillaY{other.tamaCasillaY}, mr{other.mr} {}
 
     void insertar(float x, float y, const T &dato);
 

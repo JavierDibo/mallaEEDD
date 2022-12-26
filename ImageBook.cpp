@@ -105,9 +105,6 @@ deque<Etiqueta *> ImageBook::cargarDeque(string etiquetasDelCSV) {
         it = std::find(etiquetas.begin(), etiquetas.end(), aux);
         etiquetasDeque.emplace_back(&*it);
         str.erase(0, posComa + 1);
-        if (palabra == "final") {
-            int i = 0;
-        }
     }
     Etiqueta aux = Etiqueta(str);
     std::list<Etiqueta>::iterator it;
@@ -162,39 +159,41 @@ void ImageBook::cargarImages(const string &miArchivo, bool mostrarPorPantalla) {
             Fecha fecha = separateNumbers(fechaString);
 
             Imagen imagenAux(id, email, nombreFichero, tam, fecha, dequeEtiquetas, posX, posY);
-            images[contador] = imagenAux;
-            usuarios.find(email)->second.insertaImagen(&(images[contador]));
+            images[id] = imagenAux;
+
+            usuarios.find(email)->second.insertaImagen(&(images[id]));
             ++contador;
 
             if (mostrarPorPantalla) {
-                mostrar(contador, id, email, nombreFichero, tam, fechaString, dequeEtiquetas, posX, posY);
+                //mostrar(contador, id, email, nombreFichero, tam, fechaString, dequeEtiquetas, posX, posY);
                 std::cout << usuarios.find(email)->second.numImages() << " "
                           << usuarios.find(email)->second.getEmail() << std::endl;
             }
         }
         file.close();
 
+        cout << endl << "Tamanno del contendor [images]: " << images.size() << endl;
         std::cout << "Tiempo lectura del archivo 'imagenes_v2_mod.csv': "
-                  << ((clock() - t_ini) / (float) CLOCKS_PER_SEC) << " segs." << std::endl;
+                  << ((clock() - t_ini) / (float) CLOCKS_PER_SEC) << " segs.\n" << std::endl;
     } else {
         std::cout << "Error de apertura en archivo\n";
     }
 }
 
 ImageBook::ImageBook() {
-    images = vector<Imagen>(10000);
     cargarUsuarios("../usuarios.txt", false);
     cargarEtiquetas("../etiquetas.txt", false);
-    cargarImages("../imagenes_v2_mod.csv", true);
+    cargarImages("../imagenes_v2_mod.csv", false);
 }
 
 ImageBook::ImageBook(const ImageBook &other) {
     images = other.images;
     etiquetas = other.etiquetas;
     usuarios = other.usuarios;
+    imagePos = other.imagePos;
 }
 
-vector<Imagen> &ImageBook::getImages() {
+map<string, Imagen> &ImageBook::getImages() {
     return images;
 }
 

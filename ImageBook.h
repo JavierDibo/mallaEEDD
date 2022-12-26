@@ -22,16 +22,17 @@ class Usuario;
 
 class ImageBook {
 private:
-    vector<Imagen> images;
+    map<string, Imagen> images;
     list<Etiqueta> etiquetas;
     map<string, Usuario> usuarios;
+    MallaRegular<Imagen *> imagePos;
 
     deque<Etiqueta *> cargarDeque(string etiquetasDelCSV);
 
     Fecha separateNumbers(const std::string &str);
 
     static void
-    mostrar(int contador, const string id, const string &email, const string &nombre, int tam, const std::string& fecha,
+    mostrar(int contador, const string id, const string &email, const string &nombre, int tam, const std::string &fecha,
             const deque<Etiqueta *> &etiquetada, float posX, float posY);
 
     void cargarEtiquetas(string miArchivo, bool mostrarPorPantalla);
@@ -47,7 +48,7 @@ public:
 
     ~ImageBook() = default;
 
-    vector<Imagen> &getImages();
+    map<string, Imagen> &getImages();
 
     const list<Etiqueta> &getEtiquetas() const;
 

@@ -8,11 +8,9 @@
 
 using namespace std;
 
-int main(int argc, const char* argv[])
-{
+int main(int argc, const char *argv[]) {
     ImageBook hola;
 
-    /*
     RGBColor blanco(255, 255, 255);
 
     Img img(1300, 700, blanco);
@@ -47,8 +45,8 @@ int main(int argc, const char* argv[])
     cout << "nfilas = " << nfilas << endl;
     cout << "ncol = " << ncol << endl;
 
-    double pixelPorGradoX = (double)(nfilas - 1) / rangox;
-    double pixelPorGradoY = (double)(ncol - 1) / rangoy;
+    double pixelPorGradoX = (double) (nfilas - 1) / rangox;
+    double pixelPorGradoY = (double) (ncol - 1) / rangoy;
 
     cout << "Pixel por Grado X = " << pixelPorGradoX << endl;
     cout << "Pixel por Grado Y = " << pixelPorGradoY << endl;
@@ -72,21 +70,17 @@ int main(int argc, const char* argv[])
     int posX = (vlat - minlat) * pixelPorGradoX;
     int posY = ncol - 1 - ((vlon - minlon) * pixelPorGradoY);
     img.pintarPixelGrande(posX, posY, r, g, b);
-    // img.pintarPixel(posX, posY, r, g, b);
+    img.pintarPixel(posX, posY, r, g, b);
 
-    try
-    {
+    try {
         img.guardar("./mapaUsaResult.ppm");
     }
-    catch (ErrorEscrituraFichero& e)
-    {
+    catch (ErrorEscrituraFichero &e) {
         cout << "Error al escribir fichero" << endl;
         return 1;
     }
 
     cout << "Operacion realizada con exito, ahora visualizarlo con cualquier visor de imagenes" << endl;
-
-     */
 
     return EXIT_SUCCESS;
 }

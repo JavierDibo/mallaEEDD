@@ -1,23 +1,20 @@
-//
-// Created by gara on 04/10/2022.
-//
-
 #include "Imagen.h"
 
 #include <stdexcept>
 
 Imagen::Imagen() {}
 
-Imagen::Imagen(const string& id, const std::string& email, const std::string& fichero, const int tam, const Fecha& fecha,
+Imagen::Imagen(const string &id, const std::string &email, const std::string &fichero, const int tam,
+               const Fecha &fecha,
                const deque<Etiqueta *> &etiquetada, float posX, float posY) {
-    this->id=id;
-    this->fichero=fichero;
-    this->email=email;
-    this->tam=tam;
-    this->fecha=fecha;
-    this->etiquetada=etiquetada;
-    this->posX=posX;
-    this->posY=posY;
+    this->id = id;
+    this->fichero = fichero;
+    this->email = email;
+    this->tam = tam;
+    this->fecha = fecha;
+    this->etiquetada = etiquetada;
+    this->posX = posX;
+    this->posY = posY;
 }
 
 Imagen::Imagen(const Imagen &other) {
@@ -91,10 +88,13 @@ Imagen &Imagen::operator=(const Imagen &other) {
         return *this;
 
     this->id = other.id;
+    this->email = other.email;
     this->fichero = other.fichero;
     this->tam = other.tam;
     this->fecha = other.fecha;
     this->etiquetada = other.etiquetada;
+    this->posX = other.posX;
+    this->posY = other.posY;
 
     return *this;
 }

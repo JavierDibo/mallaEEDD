@@ -1,7 +1,3 @@
-//
-// Created by gara on 26/11/2022.
-//
-
 #include "Usuario.h"
 
 Usuario::Usuario() {}

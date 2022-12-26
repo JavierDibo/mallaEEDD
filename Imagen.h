@@ -1,7 +1,3 @@
-//
-// Created by gara on 26/11/2022.
-//
-
 #ifndef PRAC5_IMAGEN_H
 #define PRAC5_IMAGEN_H
 
@@ -21,13 +17,13 @@ private:
     int tam;
     Fecha fecha;
     deque<Etiqueta *> etiquetada;
-    int posX, posY;
+    float posX, posY;
 
 public:
 
     Imagen();
 
-    Imagen(const string& id, const string &email, const string &fichero, int tam, const Fecha &fecha,
+    Imagen(const string &id, const string &email, const string &fichero, int tam, const Fecha &fecha,
            const deque<Etiqueta *> &etiquetada, float posX, float posY);
 
     Imagen(const Imagen &other);
