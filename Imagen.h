@@ -14,6 +14,21 @@ class Imagen {
 private:
     string id = "id";
     string email = "email";
+    int likes = 0;
+public:
+    void setLikes(int likes);
+
+public:
+    int getLikes() const;
+
+public:
+    const string &getEmail() const;
+
+    const deque<Etiqueta *> &getEtiquetada() const;
+
+    const UTM &getUtm() const;
+
+private:
     string fichero = "fichero";
     int tam;
     Fecha fecha;
@@ -32,6 +47,8 @@ public:
     virtual ~Imagen();
 
     void annadirEtiqueta(Etiqueta *etiqueta);
+
+    void nuevoLike();
 
     void setId(const string &id);
 

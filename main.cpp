@@ -2,94 +2,136 @@
 #include <iostream>
 #include <vector>
 #include <math.h>
+#include <unordered_set>
 
 #include "img.h"
 #include "ImageBook.h"
+#include "Imagen.h"
 
 using namespace std;
 
 int main(int argc, const char *argv[]) {
-    ImageBook hola;
+    ImageBook principal;
 
-    vector<Imagen*> vec = hola.buscarEtiLugar("geografia", 25,-90,30, -80);
+    // Mostrar los identificadores de las imágenes que se encuentran en el rango
+    // (rxmin=34.04, rymin=-81.06) y (rxmax=55.04, rymax=-65.06) y que comparten alguna
+    // de las etiquetas de la imagen más reciente del usuario “kenny_ohara73@yahoo.com”.
+    cout << "El numero de identificadores en el rango es: ";
 
-    for (auto x: vec) {
-        cout << x->getId() << endl;
+    vector<Imagen *> imagenesZona = principal.buscarImagLugar(34.04, -81.06, 55.04, -65.06);
+    int contadorImagenes = 0;
+
+    for (auto img: imagenesZona) {
+        contadorImagenes++;
     }
 
-    /*
-    RGBColor blanco(255, 255, 255);
+    cout << contadorImagenes << endl;
 
-    Img img(1300, 700, blanco);
+    cout << "\nLas estiquetas de la imagen mas reciente de kenny son:" << endl;
 
-    int nfilas = img.numFilas();
-    int ncol = img.numColumnas();
+    Imagen *imagenKenny = principal.getUsuarios().find("kenny_ohara73@yahoo.com")->second.getImagenMasReciente();
 
-    cout << "Imagen creada con " << nfilas << " filas y " << ncol << " columnas." << endl;
+    vector<string> etiquetasKenny;
 
-    int r = 0; // azul
-    int g = 0;
-    int b = 255;
+    for (auto etq: imagenKenny->getEtiqueta())
+        etiquetasKenny.push_back(etq->getNombre());
 
-    // sabemos el tamaño de la caja envolvente de los datos, pero volver a calcular
-
-    double minlat = 35.86688;
-    double maxlat = 43.272616;
-    double minlon = -9.99443;
-    double maxlon = 3.98926;
-
-    // Calculamos el número de pixeles asociados a un grado
-
-    cout << "lat: xmin = " << minlat << ", " << "xmax = " << maxlat << endl;
-    cout << "lon: ymin = " << minlon << ", " << "ymax = " << maxlon << endl;
-
-    double rangox = maxlat - minlat;
-    double rangoy = maxlon - minlon;
-
-    cout << "rango x = " << rangox << endl;
-    cout << "rango y = " << rangoy << endl;
-
-    cout << "nfilas = " << nfilas << endl;
-    cout << "ncol = " << ncol << endl;
-
-    double pixelPorGradoX = (double) (nfilas - 1) / rangox;
-    double pixelPorGradoY = (double) (ncol - 1) / rangoy;
-
-    cout << "Pixel por Grado X = " << pixelPorGradoX << endl;
-    cout << "Pixel por Grado Y = " << pixelPorGradoY << endl;
-
-    // elegimos las coordenada de un recuadro cualquiera
-
-    double lat1 = 40;
-    double lon1 = -8;
-
-    double lat2 = 42.0;
-    double lon2 = -5.0;
-
-    img.pintarRecuadro((lat1 - minlat) * pixelPorGradoX, ncol - 1 - ((lon1 - minlon) * pixelPorGradoY),
-                       (lat2 - minlat) * pixelPorGradoX, ncol - 1 - ((lon2 - minlon) * pixelPorGradoY), 255, 0, 0);
-
-    // ejemplo de punto que debe estar por el centro, lo pintamos acto seguido
-
-    double vlat = 39.569748;
-    double vlon = -3.002585;
-
-    int posX = (vlat - minlat) * pixelPorGradoX;
-    int posY = ncol - 1 - ((vlon - minlon) * pixelPorGradoY);
-    img.pintarPixelGrande(posX, posY, r, g, b);
-    img.pintarPixel(posX, posY, r, g, b);
-
-    try {
-        img.guardar("./mapaUsaResult.ppm");
-    }
-    catch (ErrorEscrituraFichero &e) {
-        cout << "Error al escribir fichero" << endl;
-        return 1;
+    for (auto etq: etiquetasKenny) {
+        cout << etq << endl;
     }
 
-    cout << "Operacion realizada con exito, ahora visualizarlo con cualquier visor de imagenes" << endl;
+    cout
+            << "\nLos identificadores de las imagenes que comparten etiquetas en la zona proporcionada con la ultima foto de "
+               "Kenny son: " << endl;
 
-     */
+    for (auto img: imagenesZona) {
+        for (auto etq: img->getEtiqueta()) {
+            for (auto etqKenny: etiquetasKenny) {
+                if (etq->getNombre() == etqKenny) {
+                    cout << img->getId() << endl;
+                }
+            }
+        }
+    }
 
+
+    // Mostrar el email de todos los usuarios que han tomado una foto en el rango
+    // (rxmin=36.388698, rymin=-121.72439) y (rxmax=39.388698, rymax=-89.72439).
+
+    vector<string> imagenesZona2 = principal.buscarUsurLugar(36.388698, -121.72439, 39.388698, -89.72439);
+    int valUsuarios = 0;
+
+    cout << "\nLos usuarios que han publicado una foto en la zona son: " << endl;
+    for (auto usr: imagenesZona2) {
+        valUsuarios++;
+        //Omitido por ser muchas para la consola
+        //cout << usr << endl;
+    }
+
+    cout << valUsuarios << endl;
+
+    // Mostrar el nombre de la etiqueta que más se repite en aquellas imágenes localizadas en
+    // el rango (rxmin=30.0201, rymin=-98.2340) y (rxmax=60.0039, rymax=-80.99).
+
+    string etiquetaMasRepe = principal.buscarEtiquetaRepetida(30.0201, -98.2340, 60.0039, -80.99);
+
+    cout << "\nLa etiqueta mas repetida en la zona es: " << endl << etiquetaMasRepe << endl;
+
+    //Buscar las imágenes del usuario “beau1@hotmail.com” que se encuentran localizadas
+    //en el rango (rxmin=30.8304, rymin=-94.8684) y (rxmax=47.3304, rymax=-65.3684) y
+    //obtener de ellas la imagen con más likes (en caso de empate coger una de ellas).
+
+    cout << "\nImagenes del usuario en la zona: " << endl;
+
+    vector<Imagen *> imagenesZona3 = principal.buscarImagLugar(30.8304, -94.8684, 47.3304, -65.3684);
+    vector<Imagen *> imagenesBeau;
+
+    for (auto img: imagenesZona3) {
+        if (img->getEmail() == "beau1@hotmail.com") {
+            imagenesBeau.push_back(img);
+            cout << img->getId() << endl;
+        }
+    }
+
+    cout << "\nLa imagen con mas likes es: " << endl;
+
+    int maxLikes = 0;
+    Imagen imagenMasLikes;
+
+    for (auto img: imagenesBeau) {
+        if (img->getLikes() > maxLikes) {
+            imagenMasLikes = *img;
+            maxLikes = img->getLikes();
+        }
+    }
+
+    cout << imagenMasLikes.getId() << endl;
+
+    // A continuación, dar like a aquellas imágenes que están localizadas dentro del rango de la
+    // imagen con más likes (rxmin=longitudImagenMásLikes-0.1,
+    // rymin=latitudImagenMásLikes-0.1) y (rxmax=longitudImagenMásLikes+0.1,
+    // rymax=latitudImagenMásLikes+0.1). Para comprobar que los likes se han asignado
+    // correctamente, mostrar los likes de las imágenes antes y después del cambio.
+
+    float rxmin = imagenMasLikes.getUTM().GetLatitud()-0.1,
+        rymin = imagenMasLikes.getUTM().GetLongitud()-0.1,
+        rxmax = imagenMasLikes.getUTM().GetLatitud()+0.1,
+        rymax = imagenMasLikes.getUTM().GetLongitud()+0.1;
+
+    cout << "\nImagenes dentro de la zona: " << endl;
+
+    vector<Imagen *> imagenesZona4 = principal.buscarImagLugar(rxmin, rymin, rxmax, rymax);
+
+    for (auto img: imagenesZona4) {
+        cout << img->getId() << ": " << img->getLikes() << endl;
+    }
+
+    cout << "\nImagenes dentro de la zona tras darle like: " << endl;
+
+    for (auto img: imagenesZona4) {
+        img->nuevoLike();
+        cout << img->getId() << ": " << img->getLikes() << endl;
+    }
+    
     return EXIT_SUCCESS;
 }

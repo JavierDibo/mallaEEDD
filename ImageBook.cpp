@@ -1,6 +1,7 @@
 #include "ImageBook.h"
 #include "UTM.h"
 #include <cstring>
+#include <set>
 
 void
 ImageBook::mostrar(int contador, const string id, const string &email, const string &nombre, int tam,
@@ -149,8 +150,10 @@ void ImageBook::cargarImages(const string &miArchivo, bool mostrarPorPantalla) {
             std::getline(iss, posXs, ';');
             std::getline(iss, posYs, ';');
 
+            srand(stoi(id)/3721);
             int tam, contador = 0;
             float posX, posY;
+            int a = rand() % 15 + 1;
 
             std::istringstream(tamS) >> tam;
             std::istringstream(posXs) >> posX;
@@ -163,12 +166,15 @@ void ImageBook::cargarImages(const string &miArchivo, bool mostrarPorPantalla) {
             UTM utm(posX, posY);
 
             Imagen imagenAux(id, email, nombreFichero, tam, fecha, dequeEtiquetas, utm);
+
             images[id] = imagenAux;
 
             if (maxX < posX) maxX = posX;
             if (maxY < posY) maxY = posY;
             if (minX > posX) minX = posX;
             if (minY > posY) minY = posY;
+
+            images[id].setLikes(a);
 
             usuarios.find(email)->second.insertaImagen(&(images[id]));
             ++contador;
@@ -260,11 +266,47 @@ vector<Usuario> ImageBook::buscarUsuarioFechaImagen(const Fecha fecha) {
 }
 
 std::vector<Imagen *> ImageBook::buscarImagLugar(float rxmin, float rymin, float rxmax, float rymax) {
+    if (!sonCoordenadasValidas(rxmin, rymin, rxmax, rymax)) {
+        throw std::invalid_argument("Las coordenadas no son válidas");
+    }
+
     return imagePos.buscarRango(rxmin, rymin, rxmax, rymax);
+}
+
+vector<string> ImageBook::buscarUsurLugar(float rxmin, float rymin, float rxmax, float rymax) {
+
+    if (!sonCoordenadasValidas(rxmin, rymin, rxmax, rymax)) {
+        throw std::invalid_argument("Las coordenadas no son válidas");
+    }
+
+    vector<Imagen *> vec = buscarImagLugar(rxmin, rymin, rxmax, rymax);
+    vector<Imagen *> aux;
+    vector<string> users;
+    set<string> mapa;
+    string email;
+
+    for (auto img: vec) {
+        email = img->getEmail();
+        if (mapa.find(email) == mapa.end()) {
+            aux.push_back(img);
+            mapa.insert(email);
+        }
+    }
+
+    for (const auto& usr: mapa) {
+        users.push_back(usr);
+    }
+
+    return users;
+
 }
 
 std::vector<Imagen *>
 ImageBook::buscarEtiLugar(const string &nombre, float rxmin, float rymin, float rxmax, float rymax) {
+
+    if (!sonCoordenadasValidas(rxmin, rymin, rxmax, rymax)) {
+        throw std::invalid_argument("Las coordenadas no son válidas");
+    }
 
     vector<Imagen *> vec = buscarImagLugar(rxmin, rymin, rxmax, rymax);
     vector<Imagen *> aux;
@@ -279,6 +321,48 @@ ImageBook::buscarEtiLugar(const string &nombre, float rxmin, float rymin, float 
 
     return aux;
 }
+
+string ImageBook::buscarEtiquetaRepetida(float rxmin, float rymin, float rxmax, float rymax) {
+
+    if (!sonCoordenadasValidas(rxmin, rymin, rxmax, rymax)) {
+        throw std::invalid_argument("Las coordenadas no son válidas");
+    }
+
+    vector<Imagen *> vec = buscarImagLugar(rxmin, rymin, rxmax, rymax);
+
+    map<string, int> frecuencias;
+    for (auto img: vec) {
+        for (auto etiqueta: img->getEtiqueta()) {
+            string nombre = etiqueta->getNombre();
+            if (frecuencias.count(nombre) > 0) {
+                frecuencias[nombre]++;
+            } else {
+                frecuencias[nombre] = 1;
+            }
+        }
+    }
+
+    string etiqueta_mas_comun;
+    int frecuencia_maxima = 0;
+    for (const auto& par: frecuencias) {
+        if (par.second > frecuencia_maxima) {
+            etiqueta_mas_comun = par.first;
+            frecuencia_maxima = par.second;
+        }
+    }
+
+    return etiqueta_mas_comun;
+}
+
+bool ImageBook::sonCoordenadasValidas(float rxmin, float rymin, float rxmax, float rymax) {
+    // Verificar si las coordenadas están dentro del rango válido
+    return rxmin >= minX && rymin >= minY && rxmax <= maxX && rymax <= maxY;
+}
+
+const MallaRegular<Imagen *> ImageBook::getImagePos() const {
+    return imagePos;
+}
+
 
 
 

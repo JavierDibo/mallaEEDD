@@ -1,8 +1,12 @@
 #include "Imagen.h"
+#include <cstdlib>
+#include <ctime>
+#include <string>
 
 #include <stdexcept>
 
-Imagen::Imagen() {}
+Imagen::Imagen() {
+}
 
 Imagen::Imagen(const string &id, const std::string &email, const std::string &fichero, const int tam,
                const Fecha &fecha,
@@ -109,6 +113,30 @@ void Imagen::annadirEtiqueta(Etiqueta *etiqueta) {
 
 const UTM &Imagen::getUTM() const {
     return utm;
+}
+
+const string &Imagen::getEmail() const {
+    return email;
+}
+
+const deque<Etiqueta *> &Imagen::getEtiquetada() const {
+    return etiquetada;
+}
+
+const UTM &Imagen::getUtm() const {
+    return utm;
+}
+
+int Imagen::getLikes() const {
+    return likes;
+}
+
+void Imagen::nuevoLike() {
+    likes++;
+}
+
+void Imagen::setLikes(int likes) {
+    Imagen::likes = likes;
 }
 
 

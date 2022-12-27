@@ -45,36 +45,25 @@ public:
 
     vector<Imagen *> getImagenesFecha(Fecha fecha);
 
-    const int numImages() const {
-        return userImages.size();
-    }
+    vector<Imagen *> imagenEnZona(float rxmin, float rymin, float rxmax, float rymax);
 
-    const string &getEmail() const {
-        return email;
-    }
+    void likeAutomaticoZona(float rxmin, float rymin, float rxmax, float rymax);
 
-    const map<string, Imagen *> &getUserImages() const {
-        return userImages;
-    }
+    const int numImages() const;
 
-    bool operator<(const Usuario &other) const {
-        return email < other.email;
-    }
+    const string &getEmail() const;
 
-    bool operator>(const Usuario &other) const {
-        return other < *this;
-    }
+    const map<string, Imagen *> &getUserImages() const;
 
-    bool operator<=(const Usuario &other) const {
-        return !(other < *this);
-    }
+    bool operator<(const Usuario &other) const;
 
-    bool operator>=(const Usuario &other) const {
-        return !(*this < other);
-    }
+    bool operator>(const Usuario &other) const;
+
+    bool operator<=(const Usuario &other) const;
+
+    bool operator>=(const Usuario &other) const;
 
     virtual ~Usuario() {}
-
 };
 
 

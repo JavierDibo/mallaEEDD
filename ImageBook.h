@@ -27,8 +27,12 @@ private:
     list<Etiqueta> etiquetas;
     map<string, Usuario> usuarios;
     MallaRegular<Imagen *> imagePos;
+public:
+    const MallaRegular<Imagen *> getImagePos() const;
 
-    float maxX = 18.246205, minX = 18.246205, maxY = -66.12827, minY = -66.12827; // Valores de un valor aleatorio
+private:
+
+    float maxX = 71.2995224, minX = 17.734211, maxY = -64.7346954, minY = -176.636749; // Valores max/min, son ajustados dinamicamente
 
     deque<Etiqueta *> cargarDeque(string etiquetasDelCSV);
 
@@ -66,6 +70,13 @@ public:
     std::vector<Imagen *> buscarImagLugar(float rxmin, float rymin, float rxmax, float rymax);
 
     vector<Imagen *> buscarEtiLugar(const string &nombre, float rxmin, float rymin, float rxmax, float rymax);
+
+    vector<string> buscarUsurLugar(float rxmin, float rymin, float rxmax, float rymax);
+
+    string buscarEtiquetaRepetida(float rxmin, float rymin, float rxmax, float rymax);
+
+    bool sonCoordenadasValidas(float rxmin, float rymin, float rxmax, float rymax);
+
 };
 
 

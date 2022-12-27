@@ -67,20 +67,20 @@ public:
         return casilla->borrar(dato);
     }
 
-    vector<T> buscarRango(float rxmin, float rymin, float rxmax, float rymax) {
-        vector<T> resultado;
+    vector<T> buscarRango(float rxmin, float rymin, float rxmax, float rymax) const {
+        vector<T> vec;
         for (auto &fila: mr) {
             for (auto &casilla: fila) {
-                for (auto &dato: casilla.getDatos()) {
-                    float x = dato->getUTM().GetLatitud();
-                    float y = dato->getUTM().GetLongitud();
+                for (auto &img: casilla.getDatos()) {
+                    float x = img->getUTM().GetLatitud();
+                    float y = img->getUTM().GetLongitud();
                     if (x >= rxmin && x <= rxmax && y >= rymin && y <= rymax) {
-                        resultado.push_back(dato);
+                        vec.push_back(img);
                     }
                 }
             }
         }
-        return resultado;
+        return vec;
     }
 
     unsigned int maxElementosPorCelda() {

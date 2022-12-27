@@ -89,3 +89,51 @@ vector<Imagen *> Usuario::getImagenesFecha(Fecha fecha) {
     return vectorImgs;
 }
 
+vector<Imagen *> Usuario::imagenEnZona(float rxmin, float rymin, float rxmax, float rymax) {
+    vector<Imagen *> resultado;
+    vector<Imagen *> vec = linkIB->buscarImagLugar(rxmin, rymin, rxmax, rymax);
+
+    for (auto img: vec) {
+        if (img->getEmail() == email) {
+            resultado.push_back(img);
+        }
+    }
+
+    return resultado;
+}
+
+void Usuario::likeAutomaticoZona(float rxmin, float rymin, float rxmax, float rymax) {
+    vector<Imagen *> vec = linkIB->getImagePos().buscarRango(rxmin, rymin, rxmax, rymax);
+    for (auto img: vec) {
+        img->nuevoLike();
+    }
+}
+
+const int Usuario::numImages() const {
+    return userImages.size();
+}
+
+const string &Usuario::getEmail() const {
+    return email;
+}
+
+const map<string, Imagen *> &Usuario::getUserImages() const {
+    return userImages;
+}
+
+bool Usuario::operator<(const Usuario &other) const {
+    return email < other.email;
+}
+
+bool Usuario::operator>(const Usuario &other) const {
+    return other < *this;
+}
+
+bool Usuario::operator<=(const Usuario &other) const {
+    return !(other < *this);
+}
+
+bool Usuario::operator>=(const Usuario &other) const {
+    return !(*this < other);
+}
+
