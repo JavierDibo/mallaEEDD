@@ -26,7 +26,7 @@ private:
     map<string, Imagen> images;
     list<Etiqueta> etiquetas;
     map<string, Usuario> usuarios;
-    MallaRegular<Imagen*> imagePos;
+    MallaRegular<Imagen *> imagePos;
 
     float maxX = 18.246205, minX = 18.246205, maxY = -66.12827, minY = -66.12827; // Valores de un valor aleatorio
 
@@ -44,7 +44,7 @@ private:
 
     void cargarImages(const string &miArchivo, bool mostrarPorPantalla);
 
-    void cargarMalla(bool mostrarPorPantalla);
+    void cargarMalla();
 
 public:
     ImageBook();
@@ -62,6 +62,10 @@ public:
     Etiqueta *buscarEtiqueta(string nombre);
 
     vector<Usuario> buscarUsuarioFechaImagen(Fecha fecha);
+
+    std::vector<Imagen *> buscarImagLugar(float rxmin, float rymin, float rxmax, float rymax);
+
+    vector<Imagen *> buscarEtiLugar(const string &nombre, float rxmin, float rymin, float rxmax, float rymax);
 };
 
 

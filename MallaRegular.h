@@ -24,13 +24,13 @@ class MallaRegular {
     int altura, ancho;
 
     Casilla<T> *obtenerCasilla(float x, float y) {
-        int vectorCol = floor((x - xMin) / (xMax - xMin) * ancho);
-        int vectorRow = floor((y - yMin) / (yMax - yMin) * altura);
-        if (vectorCol > ancho || vectorCol < 0 || vectorRow > altura || vectorRow < 0) {
-            cout << "\nvectorCol=" << vectorCol << "vectorRow=" << vectorRow << endl;
+        int columna = floor((x - xMin) / (xMax - xMin) * ancho);
+        int fila = floor((y - yMin) / (yMax - yMin) * altura);
+        if (columna > ancho || columna < 0 || fila > altura || fila < 0) {
+            cout << "\ncolumna=" << columna << "fila=" << fila << endl;
             throw out_of_range("obetenerCasilla");
         }
-        return &mr[vectorRow][vectorCol];
+        return &mr[fila][columna];
     }
 
 public:
@@ -53,8 +53,8 @@ public:
             tamaCasillaX{other.tamaCasillaX}, tamaCasillaY{other.tamaCasillaY}, mr{other.mr} {}
 
     void insertar(float x, float y, const T &dato) {
-        Casilla<T> *cas = obtenerCasilla(x, y);
-        cas->puntos.push_back(dato);
+        Casilla<T> *casilla = obtenerCasilla(x, y);
+        casilla->puntos.push_back(dato);
     }
 
     T *buscar(float x, float y, const T &dato) {
@@ -72,8 +72,8 @@ public:
         for (auto &fila: mr) {
             for (auto &casilla: fila) {
                 for (auto &dato: casilla.getDatos()) {
-                    float x = dato.getX();
-                    float y = dato.getY();
+                    float x = dato->getUTM().GetLatitud();
+                    float y = dato->getUTM().GetLongitud();
                     if (x >= rxmin && x <= rxmax && y >= rymin && y <= rymax) {
                         resultado.push_back(dato);
                     }
@@ -97,18 +97,31 @@ public:
     }
 
     float promedioElementosPorCelda() {
-        int totalElements = 0;
-        int numCells = 0;
+        int numElementos = 0;
+        int numCeldas = 0;
 
         for (auto &fila: mr) {
             for (auto &casilla: fila) {
-                totalElements += casilla.numElementos();
-                numCells++;
+                numElementos += casilla.numElementos();
+                numCeldas++;
             }
         }
 
-        return totalElements / (float) numCells;
+        return numElementos / (float) numCeldas;
     }
+
+    int size() {
+        int numElementos = 0;
+
+        for (auto &fila: mr) {
+            for (auto &casilla: fila) {
+                numElementos += casilla.numElementos();
+            }
+        }
+
+        return numElementos;
+    }
+
 };
 
 

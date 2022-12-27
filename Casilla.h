@@ -24,7 +24,13 @@ public:
 
     bool borrar(const T &dato);
 
-    int numElementos() const { return puntos.size(); }
+    int numElementos() const {
+        return puntos.size();
+    }
+
+    std::list<T> getDatos() const {
+        return puntos;
+    }
 };
 
 

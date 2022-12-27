@@ -189,21 +189,29 @@ void ImageBook::cargarImages(const string &miArchivo, bool mostrarPorPantalla) {
     }
 }
 
-void ImageBook::cargarMalla(bool mostrarPorPantalla) {
+void ImageBook::cargarMalla() {
+
+    clock_t t_ini = clock();
+
+    float tamannoCasilla = 3; // Da justo 15 de media
     imagePos = MallaRegular<Imagen *>(floor(minX), floor(minY), ceil(maxX),
-                                      ceil(maxY), 3, 3);
+                                      ceil(maxY), tamannoCasilla, tamannoCasilla);
     auto it = images.begin();
     while (it != images.end()) {
         imagePos.insertar(it->second.getUTM().GetLatitud(), it->second.getUTM().GetLongitud(), &(images[it->first]));
         ++it;
     }
+
+    cout << "Tamanno del contendor [imagePos]: " << imagePos.size() << endl;
+    std::cout << "Tiempo en instanciar la malla: "
+              << ((clock() - t_ini) / (float) CLOCKS_PER_SEC) << " segs.\n" << std::endl;
 }
 
 ImageBook::ImageBook() {
     cargarUsuarios("../usuarios.txt", false);
     cargarEtiquetas("../etiquetas.txt", false);
     cargarImages("../imagenes_v2_mod.csv", false);
-    cargarMalla(false);
+    cargarMalla();
 
     cout << "\nPromedio: " << imagePos.promedioElementosPorCelda() << endl
          << "\nNum elem casilla mas poblada: " << imagePos.maxElementosPorCelda() << endl;
@@ -250,6 +258,28 @@ vector<Usuario> ImageBook::buscarUsuarioFechaImagen(const Fecha fecha) {
     }
     return vecUsers;
 }
+
+std::vector<Imagen *> ImageBook::buscarImagLugar(float rxmin, float rymin, float rxmax, float rymax) {
+    return imagePos.buscarRango(rxmin, rymin, rxmax, rymax);
+}
+
+std::vector<Imagen *>
+ImageBook::buscarEtiLugar(const string &nombre, float rxmin, float rymin, float rxmax, float rymax) {
+
+    vector<Imagen *> vec = buscarImagLugar(rxmin, rymin, rxmax, rymax);
+    vector<Imagen *> aux;
+
+    for (auto img: vec) {
+        for (auto etiqueta: img->getEtiqueta()) {
+            if (etiqueta->getNombre() == nombre) {
+                aux.push_back(img);
+            }
+        }
+    }
+
+    return aux;
+}
+
 
 
 

@@ -11,6 +11,12 @@ using namespace std;
 int main(int argc, const char *argv[]) {
     ImageBook hola;
 
+    vector<Imagen*> vec = hola.buscarEtiLugar("geografia", 25,-90,30, -80);
+
+    for (auto x: vec) {
+        cout << x->getId() << endl;
+    }
+
     /*
     RGBColor blanco(255, 255, 255);
 
