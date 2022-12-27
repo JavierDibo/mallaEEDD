@@ -6,23 +6,24 @@ Imagen::Imagen() {}
 
 Imagen::Imagen(const string &id, const std::string &email, const std::string &fichero, const int tam,
                const Fecha &fecha,
-               const deque<Etiqueta *> &etiquetada, float posX, float posY) {
+               const deque<Etiqueta *> &etiquetada, UTM utm) {
     this->id = id;
     this->fichero = fichero;
     this->email = email;
     this->tam = tam;
     this->fecha = fecha;
     this->etiquetada = etiquetada;
-    this->posX = posX;
-    this->posY = posY;
+    this->utm = utm;
 }
 
 Imagen::Imagen(const Imagen &other) {
     this->id = other.id;
     this->fichero = other.fichero;
+    this->email = other.email;
     this->tam = other.tam;
     this->fecha = other.fecha;
     this->etiquetada = other.etiquetada;
+    this->utm = other.utm;
 }
 
 Imagen::~Imagen() = default;
@@ -93,8 +94,7 @@ Imagen &Imagen::operator=(const Imagen &other) {
     this->tam = other.tam;
     this->fecha = other.fecha;
     this->etiquetada = other.etiquetada;
-    this->posX = other.posX;
-    this->posY = other.posY;
+    this->utm = other.utm;
 
     return *this;
 }
@@ -105,6 +105,10 @@ bool Imagen::operator==(const Imagen &valor) const {
 
 void Imagen::annadirEtiqueta(Etiqueta *etiqueta) {
     etiquetada.push_back(etiqueta);
+}
+
+const UTM &Imagen::getUTM() const {
+    return utm;
 }
 
 

@@ -22,10 +22,13 @@ class Usuario;
 
 class ImageBook {
 private:
+
     map<string, Imagen> images;
     list<Etiqueta> etiquetas;
     map<string, Usuario> usuarios;
-    MallaRegular<Imagen *> imagePos;
+    MallaRegular<Imagen*> imagePos;
+
+    float maxX = 18.246205, minX = 18.246205, maxY = -66.12827, minY = -66.12827; // Valores de un valor aleatorio
 
     deque<Etiqueta *> cargarDeque(string etiquetasDelCSV);
 
@@ -40,6 +43,8 @@ private:
     void cargarUsuarios(string miArchivo, bool mostrarPorPantalla);
 
     void cargarImages(const string &miArchivo, bool mostrarPorPantalla);
+
+    void cargarMalla(bool mostrarPorPantalla);
 
 public:
     ImageBook();

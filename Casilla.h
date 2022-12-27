@@ -12,13 +12,19 @@ class Casilla {
 public:
     friend class MallaRegular<T>;
 
-    Casilla() : puntos() {}
+    Casilla() : puntos({}) {
+    }
 
-    void insertar(const T &dato) { puntos.push_back(dato); }
+    void insertar(const T &dato) {
+        auto a = dato;
+        puntos.push_back(a);
+    }
 
     T *buscar(const T &dato);
 
     bool borrar(const T &dato);
+
+    int numElementos() const { return puntos.size(); }
 };
 
 

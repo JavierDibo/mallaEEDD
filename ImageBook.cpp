@@ -1,4 +1,5 @@
 #include "ImageBook.h"
+#include "UTM.h"
 #include <cstring>
 
 void
@@ -125,6 +126,7 @@ Fecha ImageBook::separateNumbers(const std::string &str) {
     return fecha;
 }
 
+
 void ImageBook::cargarImages(const string &miArchivo, bool mostrarPorPantalla) {
     std::ifstream file(miArchivo);
     if (file.good()) {
@@ -158,14 +160,21 @@ void ImageBook::cargarImages(const string &miArchivo, bool mostrarPorPantalla) {
 
             Fecha fecha = separateNumbers(fechaString);
 
-            Imagen imagenAux(id, email, nombreFichero, tam, fecha, dequeEtiquetas, posX, posY);
+            UTM utm(posX, posY);
+
+            Imagen imagenAux(id, email, nombreFichero, tam, fecha, dequeEtiquetas, utm);
             images[id] = imagenAux;
+
+            if (maxX < posX) maxX = posX;
+            if (maxY < posY) maxY = posY;
+            if (minX > posX) minX = posX;
+            if (minY > posY) minY = posY;
 
             usuarios.find(email)->second.insertaImagen(&(images[id]));
             ++contador;
 
             if (mostrarPorPantalla) {
-                //mostrar(contador, id, email, nombreFichero, tam, fechaString, dequeEtiquetas, posX, posY);
+                mostrar(contador, id, email, nombreFichero, tam, fechaString, dequeEtiquetas, posX, posY);
                 std::cout << usuarios.find(email)->second.numImages() << " "
                           << usuarios.find(email)->second.getEmail() << std::endl;
             }
@@ -180,10 +189,24 @@ void ImageBook::cargarImages(const string &miArchivo, bool mostrarPorPantalla) {
     }
 }
 
+void ImageBook::cargarMalla(bool mostrarPorPantalla) {
+    imagePos = MallaRegular<Imagen *>(floor(minX), floor(minY), ceil(maxX),
+                                      ceil(maxY), 3, 3);
+    auto it = images.begin();
+    while (it != images.end()) {
+        imagePos.insertar(it->second.getUTM().GetLatitud(), it->second.getUTM().GetLongitud(), &(images[it->first]));
+        ++it;
+    }
+}
+
 ImageBook::ImageBook() {
     cargarUsuarios("../usuarios.txt", false);
     cargarEtiquetas("../etiquetas.txt", false);
     cargarImages("../imagenes_v2_mod.csv", false);
+    cargarMalla(false);
+
+    cout << "\nPromedio: " << imagePos.promedioElementosPorCelda() << endl
+         << "\nNum elem casilla mas poblada: " << imagePos.maxElementosPorCelda() << endl;
 }
 
 ImageBook::ImageBook(const ImageBook &other) {

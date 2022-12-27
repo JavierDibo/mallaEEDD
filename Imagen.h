@@ -6,6 +6,7 @@
 
 #include "fecha.h"
 #include "Etiqueta.h"
+#include "UTM.h"
 
 using std::string;
 
@@ -17,14 +18,14 @@ private:
     int tam;
     Fecha fecha;
     deque<Etiqueta *> etiquetada;
-    float posX, posY;
+    UTM utm;
 
 public:
 
     Imagen();
 
     Imagen(const string &id, const string &email, const string &fichero, int tam, const Fecha &fecha,
-           const deque<Etiqueta *> &etiquetada, float posX, float posY);
+           const deque<Etiqueta *> &etiquetada, UTM utm);
 
     Imagen(const Imagen &other);
 
@@ -45,6 +46,8 @@ public:
     const string &getFichero() const;
 
     const int &getTam() const;
+
+    const UTM &getUTM() const;
 
     Fecha &getFecha();
 

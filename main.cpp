@@ -11,6 +11,7 @@ using namespace std;
 int main(int argc, const char *argv[]) {
     ImageBook hola;
 
+    /*
     RGBColor blanco(255, 255, 255);
 
     Img img(1300, 700, blanco);
@@ -81,6 +82,8 @@ int main(int argc, const char *argv[]) {
     }
 
     cout << "Operacion realizada con exito, ahora visualizarlo con cualquier visor de imagenes" << endl;
+
+     */
 
     return EXIT_SUCCESS;
 }
